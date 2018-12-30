@@ -267,3 +267,28 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
 
     app.run(host='0.0.0.0', port=port)
+
+from bs4 import BeautifulSoup
+import requests
+import urllib
+target_url = 'https://www.bing.com/search?q=%E6%97%85%E9%A4%A8&qs=n&form=QBRE&sp=-1&pq=lvguan&sc=0-6&sk=&cvid=60838F46D7B043DCBB2051216EBDCF49'
+search_thing = '旅館'
+target_param = urllib.parse.urlencode({'q':search_thing})
+target = target_url + '?' + target_param
+print(target)
+r = requests.get(target)
+html_info = r.text
+
+print(html_info)
+soup = BeautifulSoup(html_info, 'html.parser')
+search_result = soup.find('ol', {'id': 'b_results'})
+print(search_result)
+search_result_li = search_result.find_all('li', {'class':'b_algo'})
+print(search_result_li[0])
+for li in search_result_li:
+    target_tag = li.find('h2').find('a')
+#     print(target_tag)
+    title = target_tag.get_text()
+    href= target_tag['href']
+    print(title, href)
+	
